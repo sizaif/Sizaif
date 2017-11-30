@@ -1,0 +1,151 @@
+#include <bits/stdc++.h>
+#include <iostream>
+#include <stdio.h>
+#include <algorithm>
+#include <cmath>
+#include <math.h>
+#include <cstring>
+#include <string>
+#include <queue>
+#include <deque>
+#include <stack>
+#include <stdlib.h>
+#include <list>
+#include <map>
+#include <set>
+#include <bitset>
+#include <vector>
+#define mem(a,b) memset(a,b,sizeof(a))
+#define findx(x,b,n) lower_bound(b+1,b+1+n,x)-b
+#define FIN      freopen("input.txt","r",stdin)
+#define FOUT     freopen("output.txt","w",stdout)
+#define lson rt << 1, l, mid
+#define rson rt << 1|1, mid + 1, r
+#define  FI(n) IO::read(n)
+#define  Be IO::begin()
+
+using namespace std;
+typedef long long ll;
+const double PI=acos(-1);
+const int INF=0x3f3f3f3f;
+const double esp=1e-6;
+const int maxn=1e6+5;
+const int MAXN=10025;
+const int MOD=1e9+7;
+const int mod=1e9+7;
+int dir[5][2]={0,1,0,-1,1,0,-1,0};
+
+namespace IO {
+	const int MT = 5e7;
+	char buf[MT]; int c,sz;
+	void begin(){
+		c = 0;
+		sz = fread(buf, 1, MT, stdin);//Ò»´ÎÐÔÊäÈë
+	}
+	template<class T>
+	inline bool read(T &t){
+		while( c < sz && buf[c] != '-' && ( buf[c]<'0' || buf[c] >'9')) c++;
+		if( c>=sz) return false;
+		bool flag = 0; if( buf[c]== '-') flag = 1,c++;
+		for( t=0; c<=sz && '0' <=buf[c] && buf[c] <= '9'; c++ ) t= t*10 + buf[c]-'0';
+		if(flag) t=-t;
+		return true;
+	}
+}
+ll inv[maxn*2];
+inline void ex_gcd(ll a,ll b,ll &d,ll &x,ll &y){if(!b){ x=1; y=0; d=a; }else{ ex_gcd(b,a%b,d,y,x); y-=x*(a/b);};}
+inline ll gcd(ll a,ll b){ return b?gcd(b,a%b):a;}
+inline ll exgcd(ll a,ll b,ll &x,ll &y){if(!b){x=1;y=0;return a;}ll ans=exgcd(b,a%b,x,y);ll temp=x;x=y;y=temp-a/b*y;return ans;}
+inline ll lcm(ll a,ll b){ return b/gcd(a,b)*a;}
+inline ll qpow(ll x,ll n){ll res=1;for(;n;n>>=1){if(n&1)res=(res*x)%MOD;x=(x*x)%MOD;}return res;}
+inline ll inv_exgcd(ll a,ll n){ll d,x,y;ex_gcd(a,n,d,x,y);return d==1?(x+n)%n:-1;}
+inline ll inv1(ll b){return b==1?1:(MOD-MOD/b)*inv1(MOD%b)%MOD;}
+inline ll inv2(ll b){return qpow(b,MOD-2);}
+
+
+struct node{
+    int x,y;
+    node(int x,int y):x(x),y(y){}  // ¹¹Ôìº¯Êý
+
+    bool operator < (const node& z) const  // ÖØÔØÔËËã·û
+    {
+        return x<z.x || x==z.x&&y<z.y;
+    }
+};
+
+
+
+int main()
+{
+    int n,m;
+    while(~scanf("%d %d",&n,&m))
+    {
+        getchar();
+        int a[n][m];
+        char str[100];
+        string s[MAXN][15];
+        map<string,int>mp;
+        int k=1;
+        for(int i=0;i<n;i++)
+        {
+            gets(str);
+            int len=strlen(str);
+            int col=0;
+            for(int j=0;j<len;j++)
+            {
+                if(str[j]==',')
+                {
+                   // cout<<s[i][col]<<endl;
+                    if(!mp[s[i][col]])
+                    {
+                        mp[s[i][col]]=k;
+                        a[i][col]=k++;
+                        //cout<<mp[s[i][col]]<<endl;
+                    }
+                    else
+                        a[i][col]=mp[s[i][col]];
+                    col++;
+                }
+                else
+                    s[i][col].push_back(str[j]);
+            }
+            if(!mp[s[i][col]])
+            {
+            	mp[s[i][col]]=k;
+            	a[i][col]=k++;
+			}
+			else  a[i][col]=mp[s[i][col]];
+        }
+        int flag=1;
+        for(int i=0;i<m&&flag;i++)
+        {
+            for(int j=i+1;j<m&&flag;j++)
+            {
+                map<node,int> date;
+                for(int ij=0;ij<n&&flag;ij++)
+                {
+                    node z(a[ij][i],a[ij][j]);
+                    if(date[z])
+                    {
+                        flag=0;
+                        printf("NO\n");
+                        printf("%d %d\n",date[z],ij+1);
+                        printf("%d %d\n",i+1,j+1);
+                    }
+                    else
+                        date[z]=ij+1;
+                    if(!flag)
+                        break;
+                }
+                if(!flag)
+                    break;
+            }
+            if(!flag)
+                break;
+
+        }
+        if(flag)
+                printf("YES\n");
+    }
+    return 0;
+}
